@@ -34,15 +34,12 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests()
-            .requestMatchers("/admin").hasAnyRole("ADMIN", "USER")
-            .requestMatchers("/login").permitAll()
+            .requestMatchers("/admin").hasAnyRole("ADMIN")
+            .requestMatchers("/login", "/signup").permitAll()
             .anyRequest().authenticated()
             .and()
             .httpBasic();
-            //.httpBasic();
-            
-            //.formLogin();
-			//.logout((logout) -> logout.permitAll());
+
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -63,19 +60,4 @@ public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
     }
-
-
-
-
-
-    // .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class) // Кастомный фильтр сработает перед аутентификацией
-    /* @Bean
-    PasswordEncoder passwordEncoder () {return new BCryptPasswordEncoder();
-    } */
-
-    /* @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userPrincipalDetailsService)
-          .passwordEncoder(new BCryptPasswordEncoder());
-    } */
 }
