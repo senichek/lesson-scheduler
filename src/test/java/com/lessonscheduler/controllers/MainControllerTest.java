@@ -47,7 +47,7 @@ public class MainControllerTest {
             //.andExpect(content().string(containsString("Bearer")));
 
             // Check if there is a jwt token in the response.
-            // JWT consists of 3 parts devided by "."
+            // JWT consists of 3 parts divided by "."
             // I split JWT to check if there are 3 parts in it.
             // If yes  - all is good.
             String response = andReturn.getResponse().getContentAsString();
