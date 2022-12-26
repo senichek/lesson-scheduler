@@ -34,11 +34,12 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests()
+            .requestMatchers("/login", "/signup", "/home", "/v3/**", "/swagger-ui/**").permitAll()
             .requestMatchers("/admin").hasAnyRole("ADMIN")
-            .requestMatchers("/login", "/signup").permitAll()
-            .anyRequest().authenticated();
-            //.and()
-            //.httpBasic();
+            .anyRequest().authenticated()
+            .and()
+            .httpBasic();
+
 
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
