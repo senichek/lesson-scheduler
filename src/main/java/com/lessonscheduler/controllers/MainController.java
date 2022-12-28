@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lessonscheduler.models.DTO.AuthResponseDTO;
 import com.lessonscheduler.models.DTO.loginDTO;
 import com.lessonscheduler.security.JwtGenerator;
+import com.lessonscheduler.security.UserPrincipal;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -47,12 +48,19 @@ public class MainController {
     @PostMapping(value = "/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody loginDTO loginDTO, HttpServletRequest req) {
 
+        // "authenticate" will invoke UserPrincipalDetailsService
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
-        
+
+        UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+
+        Integer userId = userPrincipal.getId();
+        String name = userPrincipal.getName();
+        String role = userPrincipal.getAuthorities().toString();
+
         String token = jwtGenerator.generateJWT(authentication);
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponseDTO(userId, name, role, token), HttpStatus.OK);
     }
     
 }
