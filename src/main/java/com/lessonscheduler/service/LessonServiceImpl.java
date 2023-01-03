@@ -30,4 +30,10 @@ public class LessonServiceImpl implements LessonService {
     public List<Lesson> getAll() {
         return lessonRepo.findAll();
     }
+
+    @Override
+    public Integer delete(Integer id) {
+        lessonRepo.deleteById(id);
+        return id;
+    }
 }
