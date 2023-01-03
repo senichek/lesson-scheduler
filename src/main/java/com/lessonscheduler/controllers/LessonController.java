@@ -55,4 +55,10 @@ public class LessonController {
         
         return new ResponseEntity<>(toReserve, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/delete/{lessonId}")
+    public ResponseEntity<String> delete(@PathVariable("lessonId") Integer id) {
+        Integer deleted = lessonService.delete(id);
+        return new ResponseEntity<>("Lesson " + deleted + " has been deleted", HttpStatus.OK);
+    }
 }
