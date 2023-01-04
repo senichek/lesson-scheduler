@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lessonscheduler.models.Lesson;
+import com.lessonscheduler.models.User;
 import com.lessonscheduler.models.DTO.LessonCreationDTO;
+import com.lessonscheduler.security.SecurityUtils;
 import com.lessonscheduler.service.LessonService;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,12 +46,18 @@ public class LessonController {
     }
 
     @GetMapping(value = "/reserve/{lessonId}")
-    public ResponseEntity<Lesson> reserve(@PathVariable("lessonId") Integer id) {
+    public ResponseEntity<Lesson> reserve(@PathVariable("lessonId") Integer id) throws Exception {
 
-        // Set studentId, studentName and reserved = true and re-save the lesson
         Lesson toReserve = lessonService.findById(id);
-        toReserve.setStudentId(2);
-        toReserve.setStudentName("Student_one");
+
+        if (toReserve == null || toReserve.isReserved() == true) {
+            throw new Exception("This slot has been either taken by someone else or deleted.");
+        }
+
+        User loggedInUser = SecurityUtils.getLoggedInUser();
+        // Set studentId, studentName and reserved = true and re-save the lesson
+        toReserve.setStudentId(loggedInUser.getId());
+        toReserve.setStudentName(loggedInUser.getName()); // this is name, not email
         toReserve.setReserved(true);
         lessonService.create(toReserve);
         

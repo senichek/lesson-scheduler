@@ -1,6 +1,6 @@
 package com.lessonscheduler.models;
 
-enum Role {
+public enum Role {
     USER,
     ADMIN
   }
