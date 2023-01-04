@@ -36,4 +36,9 @@ public class LessonServiceImpl implements LessonService {
         lessonRepo.deleteById(id);
         return id;
     }
+
+    @Override
+    public List<Lesson> getAllUnreserved() {
+        return lessonRepo.findAllUnreserved();
+    }
 }

@@ -61,4 +61,10 @@ public class LessonController {
         Integer deleted = lessonService.delete(id);
         return new ResponseEntity<>("Lesson " + deleted + " has been deleted", HttpStatus.OK);
     }
+
+    @GetMapping(value = "/all/unreserved")
+    public ResponseEntity<List<Lesson>> getAllUnreserved() {
+        List<Lesson> lessons = lessonService.getAllUnreserved();
+        return new ResponseEntity<>(lessons, HttpStatus.OK);
+    }
 }

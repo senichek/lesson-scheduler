@@ -16,9 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lessonscheduler.models.Lesson;
 import com.lessonscheduler.models.DTO.LessonCreationDTO;
@@ -91,5 +93,68 @@ public class LessonControllerTests {
             
             String deletionResponse = andRet.getResponse().getContentAsString();
             assertEquals("Lesson 1 has been deleted", deletionResponse);
+    }
+
+    @Test
+    public void reserveAndGetAllUnreserved() throws Exception {
+        // Create two lessons and reserve one of them
+        LessonCreationDTO lessonOne = new LessonCreationDTO();
+        lessonOne.setFrom(LocalDateTime.of(2020, 1, 2, 15, 00));
+        lessonOne.setTo(LocalDateTime.of(2020, 1, 2, 16, 00));
+
+        LessonCreationDTO lessonTwo = new LessonCreationDTO();
+        lessonTwo.setFrom(LocalDateTime.of(2020, 1, 3, 10, 00));
+        lessonTwo.setTo(LocalDateTime.of(2020, 1, 3, 11, 00));
+
+        // Persist to DB
+        mockMvc.perform(MockMvcRequestBuilders.post("/lesson/create")
+            .content(objectMapper.writeValueAsString(lessonOne))
+            .contentType("application/json")
+            .header("Authorization", jwt)
+            )
+            .andExpect(status().isOk())
+            .andDo(print());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/lesson/create")
+            .content(objectMapper.writeValueAsString(lessonTwo))
+            .contentType("application/json")
+            .header("Authorization", jwt)
+            )
+            .andExpect(status().isOk())
+            .andDo(print());
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/lesson/reserve/3")
+            .header("Authorization", jwt)
+            )
+            .andExpect(status().isOk())
+            .andDo(print());
+
+            // Get all lessons to make sure the first one is actually reserved
+            MvcResult andReturn = mockMvc.perform(MockMvcRequestBuilders.get("/lesson/all")
+            .header("Authorization", jwt)
+            )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn();
+
+            String response = andReturn.getResponse().getContentAsString();
+            // Convert response into the list of objects
+            List<Lesson> lessons = objectMapper.readValue(response, new TypeReference<List<Lesson>>(){});
+
+            assertEquals(true, lessons.get(1).isReserved());
+
+            // Get all unreserved
+            MvcResult andRet = mockMvc.perform(MockMvcRequestBuilders.get("/lesson/all/unreserved")
+            .header("Authorization", jwt)
+            )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn();
+
+            String responseTwo = andRet.getResponse().getContentAsString();
+            // Convert response into the list of objects
+            List<Lesson> lessonz = objectMapper.readValue(responseTwo, new TypeReference<List<Lesson>>(){});
+
+            assertEquals(1, lessonz.size());
     }
 }
