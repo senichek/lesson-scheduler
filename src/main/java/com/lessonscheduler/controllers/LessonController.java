@@ -86,4 +86,22 @@ public class LessonController {
         List<Lesson> lessons = lessonService.getAllReservedOfLoggedIn(loggedIn.getId());
         return new ResponseEntity<>(lessons, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/cancel/{lessonId}")
+    public ResponseEntity<Lesson> cancel(@PathVariable("lessonId") Integer id) throws Exception {
+
+        Lesson toCancel = lessonService.findById(id);
+
+        if (toCancel == null) {
+            throw new Exception("The entity not found.");
+        }
+
+        toCancel.setStudentId(null);
+        toCancel.setStudentName(null); 
+        toCancel.setReserved(false);
+
+        lessonService.create(toCancel);
+        
+        return new ResponseEntity<>(toCancel, HttpStatus.OK);
+    }
 }
