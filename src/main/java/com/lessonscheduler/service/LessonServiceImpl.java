@@ -41,4 +41,10 @@ public class LessonServiceImpl implements LessonService {
     public List<Lesson> getAllUnreserved() {
         return lessonRepo.findAllUnreserved();
     }
+
+    @Override
+    public List<Lesson> getAllReservedOfLoggedIn(Integer loggedInUserId) {
+        // all reserved lessons of the logged-in user
+        return lessonRepo.findAllReservedOfLoggedIn(loggedInUserId);
+    }
 }
