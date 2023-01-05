@@ -14,4 +14,7 @@ public interface LessonRepo extends JpaRepository<Lesson, Integer> {
 
     @Query(value = "SELECT * FROM lessons WHERE reserved = false", nativeQuery = true)
     public List<Lesson> findAllUnreserved();
+
+    @Query(value = "SELECT * FROM lessons WHERE reserved = true AND student_id=:idOfLoggedIn", nativeQuery = true)
+    public List<Lesson> findAllReservedOfLoggedIn(Integer idOfLoggedIn);
 }

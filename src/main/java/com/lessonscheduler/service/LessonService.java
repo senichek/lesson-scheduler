@@ -10,4 +10,6 @@ public interface LessonService {
     public List<Lesson> getAll();
     public Integer delete(Integer id);
     public List<Lesson> getAllUnreserved();
+    public List<Lesson> getAllReservedOfLoggedIn(Integer loggedInUserId); // all reserved lessons of the logged-in user
+    
 }

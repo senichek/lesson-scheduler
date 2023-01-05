@@ -75,4 +75,15 @@ public class LessonController {
         List<Lesson> lessons = lessonService.getAllUnreserved();
         return new ResponseEntity<>(lessons, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/all/reserved")
+    public ResponseEntity<List<Lesson>> getAllReserved() throws Exception {
+        // all reserved lessons of the logged-in user
+        User loggedIn = SecurityUtils.getLoggedInUser();
+        if (loggedIn == null) {
+            throw new Exception("Authenticated user not found");
+        }
+        List<Lesson> lessons = lessonService.getAllReservedOfLoggedIn(loggedIn.getId());
+        return new ResponseEntity<>(lessons, HttpStatus.OK);
+    }
 }
