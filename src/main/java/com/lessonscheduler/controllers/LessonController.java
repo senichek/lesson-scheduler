@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lessonscheduler.models.Lesson;
+import com.lessonscheduler.models.Role;
 import com.lessonscheduler.models.User;
 import com.lessonscheduler.models.DTO.LessonCreationDTO;
 import com.lessonscheduler.security.SecurityUtils;
@@ -39,6 +40,10 @@ public class LessonController {
         Lesson lesson = new Lesson();
         lesson.setDateTimeFrom(lessonDTO.getFrom());
         lesson.setDateTimeTo(lessonDTO.getTo());
+
+        
+        // Default description
+        lesson.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris laoreet sapien et mauris venenatis auctor");
 
         lessonService.create(lesson);
 
@@ -103,5 +108,25 @@ public class LessonController {
         lessonService.create(toCancel);
         
         return new ResponseEntity<>(toCancel, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{lessonId}")
+    public ResponseEntity<Lesson> getById(@PathVariable("lessonId") Integer id) throws Exception {
+        // Return the lesson which is either unreserved or reserved by the logged-in user.
+        // In other words we must not allow accessing a lesson reserved by a different user.
+
+        Lesson lesson = lessonService.findById(id);
+
+        if (lesson == null) {
+            throw new Exception("The entity was not found.");
+        }
+
+        User loggedInUser = SecurityUtils.getLoggedInUser();
+
+        if (lesson.isReserved() == true && loggedInUser.getRole().equals(Role.USER) && lesson.getStudentId() != loggedInUser.getId()) {
+            throw new Exception("No permission. You cannot see other students lessons.");
+        }
+
+        return new ResponseEntity<>(lesson, HttpStatus.OK);
     }
 }
