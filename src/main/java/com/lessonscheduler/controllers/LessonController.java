@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lessonscheduler.models.Lesson;
 import com.lessonscheduler.models.Role;
 import com.lessonscheduler.models.User;
+import com.lessonscheduler.models.DTO.DescriptionUpdateDTO;
 import com.lessonscheduler.models.DTO.LessonCreationDTO;
 import com.lessonscheduler.security.SecurityUtils;
 import com.lessonscheduler.service.LessonService;
@@ -128,5 +130,21 @@ public class LessonController {
         }
 
         return new ResponseEntity<>(lesson, HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "/updatedescription")
+    public ResponseEntity<Lesson> updateDescription(@RequestBody DescriptionUpdateDTO ls) throws Exception {
+
+        Lesson lesson = lessonService.findById(ls.getId());
+
+        if (lesson == null) {
+            throw new Exception("The entity not found.");
+        }
+
+        lesson.setDescription(ls.getDescription());
+
+        Lesson updated = lessonService.create(lesson);
+        
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }
