@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,8 +43,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "role", nullable = false)
-    @NotBlank
-    @Size(min = 4, max = 5)
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 }
