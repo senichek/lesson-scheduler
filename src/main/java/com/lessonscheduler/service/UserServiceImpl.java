@@ -1,5 +1,7 @@
 package com.lessonscheduler.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +24,11 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         User found = userRepo.findByEmail(email);
         return found;
+    }
+
+    @Override
+    public User findById(int id) {
+        Optional<User> found = userRepo.findById(id);
+        return found.get();
     }
 }

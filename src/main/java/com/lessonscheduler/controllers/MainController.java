@@ -51,6 +51,9 @@ public class MainController {
 
         AuthResponseDTO authenticated = authenticationService.authenticate(loginDTO.getEmail(), loginDTO.getPassword());
 
+        //[ROLE_USER] or [ROLE_USER] onto USER or ADMIN
+        authenticated.setRole(authenticated.getRole().substring(6, authenticated.getRole().length()-1));
+
         return new ResponseEntity<>(authenticated, HttpStatus.OK);
     }
 
@@ -77,6 +80,9 @@ public class MainController {
         }
     
         AuthResponseDTO authenticated = authenticationService.authenticate(signupDTO.getEmail(), signupDTO.getPassword());
+
+        //[ROLE_USER] or [ROLE_USER] onto USER or ADMIN
+        authenticated.setRole(authenticated.getRole().substring(6, authenticated.getRole().length()-1));
 
         return new ResponseEntity<>(authenticated, HttpStatus.OK);
     }
