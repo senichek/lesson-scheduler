@@ -32,10 +32,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Integer userId = userPrincipal.getId();
         String name = userPrincipal.getName();
+        String eml = userPrincipal.getUsername(); // email
         String role = userPrincipal.getAuthorities().toString();
 
         String token = jwtGenerator.generateJWT(authentication);
 
-        return new AuthResponseDTO(userId, name, role, token);
+        return new AuthResponseDTO(userId, name, eml, role, token);
     }
 }

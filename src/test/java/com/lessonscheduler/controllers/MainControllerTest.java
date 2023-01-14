@@ -52,7 +52,8 @@ public class MainControllerTest {
             // If yes  - all is good.
             String response = andReturn.getResponse().getContentAsString();
             String substringContainingToken = response.substring(13, response.length() - 2);
-            String[] split = substringContainingToken.split("\\.");
-            assertEquals(3, split.length);
+            String jwt = substringContainingToken.split("\\,")[0];
+            String[] splitedJwt = jwt.split("\\.");
+            assertEquals(3, splitedJwt.length);
     }
 }
